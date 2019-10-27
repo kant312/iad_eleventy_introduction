@@ -117,12 +117,13 @@ Eleventy ne possède pas d'assets pipeline ou d'outil de build par défaut. Il e
 
 Lorsque vous commencez à utiliser des outils de build pour vos assets, vous devrez modifier votre configuration de `addPassthroughCopy` et probablement ignorer les dossiers d'assets qui ne dépendent plus d'Eleventy puisque ce sont alors vos outils et scripts de build qui vont les générer dans votre dossier `dist`.
 
-A titre d'exemple, si un script NPM génère notre fichier CSS à partir de fichiers Sass et compile votre JavaScript avec Webpack par exemple, il suffit de faire les modifications suivantes:
+A titre d'exemple, si un script NPM génère notre fichier CSS à partir de fichiers Sass, il suffit de faire les modifications suivantes:
 
 **.eleventy.js**
 ```js
 module.exports = function(eleventyConfig) {
   // copy files
+  eleventyConfig.addPassthroughCopy("./src/assets/js/");
   eleventyConfig.addPassthroughCopy("./src/assets/fonts/");
   eleventyConfig.addPassthroughCopy("./src/assets/img/");
 
@@ -138,13 +139,12 @@ module.exports = function(eleventyConfig) {
 
 **.eleventyignore**
 ```txt
-node_modules/
-dist/
-src/assets/scss/
-src/assets/js/
+./node_modules/
+./dist/
+./src/assets/scss/
 ```
 
-De cette façon, Eleventy va complètement ignorer les dossiers `./src/assets/scss/` et `./src/assets/js/`, pendant que vos scripts ou outils de build vont générer les fichiers requis dans votre dossier `./dist/`.
+De cette façon, Eleventy va complètement ignorer le dossier `./src/assets/scss/` qui sera entièrement géré par l'outil de build, ainsi ce qui est produit en sortie.
 
 Personellement, j'utilise Gulp en combinaison avec Webpack dans la plupart de mes projets et Eleventy est très facile à intégrer à ce genre de workflow.
 
@@ -244,7 +244,7 @@ module.exports = function(eleventyConfig) {
 
 Vous pouvez maintenant accéder à vos collections en utilisant `collections.blogposts` et `collections.team` dans vos templates. Nous y reviendrons dans le chapitre consacré au templating.
 
-Il me reste à signaler qu'Eleventy créé par défaut une collection contenant tous vos élements de contenus, c'est-à-dire tous les fichiers gérés par Eleventy. Cette collection spéciale est adressable via `colections.all`.
+Il me reste à signaler qu'Eleventy crée par défaut une collection contenant tous vos élements de contenus, c'est-à-dire tous les fichiers gérés par Eleventy. Cette collection spéciale est adressable via `collections.all`.
 
 Lorsqu'une collection est créée, les clefs suivantes sont automatiquement créées:
 
@@ -261,7 +261,7 @@ Lorsqu'une collection est créée, les clefs suivantes sont automatiquement cré
 Lorsque vous créez une collection avec l'API d'Eleventy, les éléments de cette collection sont automatiquement classés en ordre ascendant en utilisant:
 
 1. La date renseignée dans le nom de fichier ou dans le YAML front matter du fichier source ou, à defaut, la date de création de celui-ci.
-2. Si certains fichiers source ont une date identique, le chemin complet (y compris le nom de fichier) est pris en compte.
+2. Si certains fichiers source ont une date identique, le chemin complet (y compris le nom de fichier) est pris en compte.  
 
 Si un classement par date correspond à ce que vous souhaitez, vous pouvez éventuellement inverser celui-ci en utilisant le filtre `reverse` de Nunjucks.
 
